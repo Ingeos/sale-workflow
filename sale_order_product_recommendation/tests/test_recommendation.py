@@ -1,82 +1,11 @@
-# Copyright 2017 Jairo Llopis <jairo.llopis@tecnativa.com>
+# Copyright 2017 Tecnativa - Jairo Llopis
+# Copyright 2020 Tecnativa - Pedro M. Baeza
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
-
-from odoo.tests.common import SavepointCase
+from .test_recommendation_common import RecommendationCase
 from odoo.exceptions import UserError
 
 
-class RecommendationCase(SavepointCase):
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        cls.partner = cls.env['res.partner'].create({
-            'name': 'Mr. Odoo',
-        })
-        cls.product_obj = cls.env['product.product']
-        cls.prod_1 = cls.product_obj.create({
-            'name': 'Test Product 1',
-            'type': 'service',
-        })
-        cls.prod_2 = cls.product_obj.create({
-            'name': 'Test Product 2',
-            'type': 'service',
-        })
-        cls.prod_3 = cls.product_obj.create({
-            'name': 'Test Product 3',
-            'type': 'service',
-        })
-        # Create old sale orders to have searchable history
-        cls.env["sale.order"].create({
-            "partner_id": cls.partner.id,
-            "state": "done",
-            "order_line": [
-                (0, 0, {
-                    "product_id": cls.prod_1.id,
-                    "name": cls.prod_1.name,
-                    "product_uom_qty": 25,
-                    "qty_delivered_method": "manual",
-                    "qty_delivered": 25,
-                }),
-                (0, 0, {
-                    "product_id": cls.prod_2.id,
-                    "name": cls.prod_2.name,
-                    "product_uom_qty": 50,
-                    "qty_delivered_method": "manual",
-                    "qty_delivered": 50,
-                }),
-                (0, 0, {
-                    "product_id": cls.prod_3.id,
-                    "name": cls.prod_3.name,
-                    "product_uom_qty": 100,
-                    "qty_delivered_method": "manual",
-                    "qty_delivered": 100,
-                }),
-            ],
-        })
-        cls.env["sale.order"].create({
-            "partner_id": cls.partner.id,
-            "state": "done",
-            "order_line": [
-                (0, 0, {
-                    "product_id": cls.prod_2.id,
-                    "name": cls.prod_2.name,
-                    "product_uom_qty": 50,
-                    "qty_delivered_method": "manual",
-                    "qty_delivered": 50,
-                }),
-            ],
-        })
-        # Create a new sale order for the same customer
-        cls.new_so = cls.env["sale.order"].create({
-            "partner_id": cls.partner.id,
-        })
-
-    def wizard(self):
-        """Get a wizard."""
-        wizard = self.env["sale.order.recommendation"].with_context(
-            active_id=self.new_so.id).create({})
-        wizard._generate_recommendations()
-        return wizard
+class RecommendationCaseTests(RecommendationCase):
 
     def test_recommendations(self):
         """Recommendations are OK."""
@@ -92,7 +21,7 @@ class RecommendationCase(SavepointCase):
         self.assertEqual(len(wizard.line_ids), 3)
         # Product 1 is first recommendation because it's in the SO already
         self.assertEqual(wizard.line_ids[0].product_id, self.prod_1)
-        self.assertEqual(wizard.line_ids[0].times_delivered, 2)
+        self.assertEqual(wizard.line_ids[0].times_delivered, 1)
         self.assertEqual(wizard.line_ids[0].units_delivered, 25)
         self.assertEqual(wizard.line_ids[0].units_included, 3)
         # Product 2 appears second
@@ -112,6 +41,17 @@ class RecommendationCase(SavepointCase):
         wizard._generate_recommendations()
         self.assertEqual(len(wizard.line_ids), 2)
 
+    def test_recommendations_archived_product(self):
+        self.env["sale.order"].create({
+            "partner_id": self.partner.id,
+        })
+        self.prod_1.active = False
+        self.prod_2.sale_ok = False
+        wizard = self.wizard()
+        wizard._generate_recommendations()
+        self.assertNotIn(self.prod_1, wizard.line_ids.mapped('product_id'))
+        self.assertNotIn(self.prod_2, wizard.line_ids.mapped('product_id'))
+
     def test_transfer(self):
         """Products get transferred to SO."""
         qty = 10
@@ -119,7 +59,6 @@ class RecommendationCase(SavepointCase):
         wiz_line_prod1 = wizard.line_ids.filtered(
             lambda x: x.product_id == self.prod_1)
         wiz_line_prod1.units_included = qty
-        wiz_line_prod1._onchange_units_included()
         wizard.action_accept()
         self.assertEqual(len(self.new_so.order_line), 1)
         self.assertEqual(self.new_so.order_line.product_id, self.prod_1)
@@ -130,7 +69,6 @@ class RecommendationCase(SavepointCase):
         wiz_line = wizard.line_ids.filtered(
             lambda x: x.product_id == self.prod_1)
         wiz_line.units_included = 0
-        wiz_line._onchange_units_included()
         # The confirmed line can't be deleted
         with self.assertRaises(UserError):
             wizard.action_accept()
@@ -147,7 +85,6 @@ class RecommendationCase(SavepointCase):
         wiz_line = wizard.line_ids.filtered(
             lambda x: x.product_id == self.prod_1)
         wiz_line.units_included = qty + 2
-        wiz_line._onchange_units_included()
         wizard.action_accept()
         # Deliver extra qty and make a new invoice
         self.new_so.order_line.qty_delivered = qty + 2
