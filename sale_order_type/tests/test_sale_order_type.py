@@ -24,6 +24,12 @@ class TestSaleOrderType(common.TransactionCase):
             'prefix': 'TSO',
             'padding': 3,
         })
+        self.sequence_quot = self.env['ir.sequence'].create({
+            'name': 'Test Quotation Update',
+            'code': 'sale.order',
+            'prefix': 'TQU',
+            'padding': 3,
+        })
         self.journal = self.env['account.journal'].search(
             [('type', '=', 'sale')], limit=1)
         self.warehouse = self.env.ref('stock.stock_warehouse_shop0')
@@ -42,7 +48,52 @@ class TestSaleOrderType(common.TransactionCase):
             'pricelist_id': self.sale_pricelist.id,
             'incoterm_id': self.free_carrier.id,
         })
+        self.sale_type_quot = self.sale_type_model.create({
+            'name': 'Test Quotation Type',
+            'sequence_id': self.sequence_quot.id,
+            'journal_id': self.journal.id,
+            'warehouse_id': self.warehouse.id,
+            'picking_policy': 'one',
+            'payment_term_id': self.immediate_payment.id,
+            'pricelist_id': self.sale_pricelist.id,
+            'incoterm_id': self.free_carrier.id,
+        })
         self.partner.sale_type = self.sale_type
+        self.sale_route = self.env["stock.location.route"].create(
+            {
+                "name": "SO -> Customer",
+                "product_selectable": True,
+                "sale_selectable": True,
+                "rule_ids": [
+                    (
+                        0,
+                        0,
+                        {
+                            "name": "SO -> Customer",
+                            "action": "pull",
+                            "picking_type_id": self.ref("stock.picking_type_in"),
+                            "location_src_id": self.ref(
+                                "stock.stock_location_components"
+                            ),
+                            "location_id": self.ref("stock.stock_location_customers"),
+                        },
+                    )
+                ],
+            }
+        )
+        self.sale_type_route = self.sale_type_model.create(
+            {
+                "name": "Test Sale Order Type-1",
+                "sequence_id": self.sequence.id,
+                "journal_id": self.journal.id,
+                "warehouse_id": self.warehouse.id,
+                "picking_policy": "one",
+                "payment_term_id": self.immediate_payment.id,
+                "pricelist_id": self.sale_pricelist.id,
+                "incoterm_id": self.free_carrier.id,
+                "route_id": self.sale_route.id,
+            }
+        )
 
     def get_sale_order_vals(self):
         sale_line_dict = {
@@ -55,6 +106,37 @@ class TestSaleOrderType(common.TransactionCase):
             'partner_id': self.partner.id,
             'order_line': [(0, 0, sale_line_dict)]
         }
+
+    def test_sale_order_in_draft_state_update_name(self):
+        order_vals = self.get_sale_order_vals()
+        order = self.sale_order_model.create(order_vals)
+        order.onchange_partner_id()
+        order.onchange_type_id()
+        self.assertEqual(order.type_id, self.sale_type)
+        self.assertEqual(order.state, "draft")
+        self.assertTrue(order.name.startswith('TSO'))
+        # change order type on sale order
+        order.type_id = self.sale_type_quot
+        order.onchange_type_id()
+        self.assertEqual(order.type_id, self.sale_type_quot)
+        self.assertTrue(order.name.startswith('TQU'))
+
+    def test_sale_order_in_sent_state_update_name(self):
+        order_vals = self.get_sale_order_vals()
+        order = self.sale_order_model.create(order_vals)
+        order.onchange_partner_id()
+        order.onchange_type_id()
+        self.assertEqual(order.type_id, self.sale_type)
+        self.assertEqual(order.state, "draft")
+        self.assertTrue(order.name.startswith('TSO'))
+        # send quotation
+        order.force_quotation_send()
+        self.assertTrue(order.state == 'sent', 'Sale: state after sending is wrong')
+        # change order type on sale order
+        order.type_id = self.sale_type_quot
+        order.onchange_type_id()
+        self.assertEqual(order.type_id, self.sale_type_quot)
+        self.assertTrue(order.name.startswith('TQU'))
 
     def test_sale_order_confirm(self):
         sale_type = self.sale_type
@@ -98,6 +180,21 @@ class TestSaleOrderType(common.TransactionCase):
         })
         invoice._onchange_partner_id()
         self.assertEqual(invoice.sale_type_id, self.sale_type)
+
+    def test_sale_order_flow_route(self):
+        order = self.sale_order_model.create(self.get_sale_order_vals())
+        order.type_id = self.sale_type_route.id
+        order.onchange_type_id()
+        self.assertEqual(order.type_id.route_id, order.order_line[0].route_id)
+        sale_line_dict = {
+            "product_id": self.product.id,
+            "name": self.product.name,
+            "product_uom_qty": 2.0,
+            "price_unit": self.product.lst_price,
+        }
+        order.write({"order_line": [(0, 0, sale_line_dict)]})
+        order.onchange_type_id()
+        self.assertEqual(order.type_id.route_id, order.order_line[1].route_id)
 
     def test_prepare_invoice(self):
         sale_type = self.sale_type

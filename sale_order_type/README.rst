@@ -26,9 +26,9 @@ Sale Order Type
 |badge1| |badge2| |badge3| |badge4| |badge5| 
 
 This module adds a typology for the sales orders. In each different type, you
-can define, invoicing and refunding journal, a warehouse, a sequence,
-the shipping policy, the invoicing policy, a payment term, a pricelist
-and an incoterm.
+can define, invoicing and refunding journal, a warehouse, a stock route,
+a sequence, the shipping policy, the invoicing policy, a payment term,
+a pricelist and an incoterm.
 
 You can see sale types as lines of business.
 
@@ -111,6 +111,11 @@ Contributors
 
   * Angel Moya Pardo <angel.moya@pesol.es>
   * Antonio J Rubio Lorente <antonio.rubio@pesol.es>
+
+* `GSLab.it <https://www.gslab.it>`_
+
+  * Giovanni Serra <giovanni@gslab.it>
+
 
 Do not contact contributors directly about support or help with technical issues.
 
