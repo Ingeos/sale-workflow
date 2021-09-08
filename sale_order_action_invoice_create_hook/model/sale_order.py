@@ -21,6 +21,10 @@ class SaleOrder(models.Model):
     def _get_draft_invoices(self, invoices, references):
         return invoices, references
 
+    @api.model
+    def _modify_invoices(self, invoices):
+        return invoices
+
     @api.model_cr
     def _register_hook(self):
 
@@ -63,8 +67,8 @@ class SaleOrder(models.Model):
                     if line.display_type == 'line_section':
                         pending_section = line
                         continue
-                    if float_is_zero(line.qty_to_invoice,
-                                     precision_digits=precision):
+                    if line.display_type != 'line_note' and float_is_zero(
+                            line.qty_to_invoice, precision_digits=precision):
                         continue
                     # START HOOK
                     # Allow to check if a line should not be invoiced
@@ -107,7 +111,8 @@ class SaleOrder(models.Model):
                                 order.client_order_ref
                         invoice.write(vals)
                     if line.qty_to_invoice > 0 or \
-                            (line.qty_to_invoice < 0 and final):
+                            (line.qty_to_invoice < 0 and final) or \
+                            line.display_type == 'line_note':
                         if pending_section:
                             pending_section.invoice_line_create(
                                 invoices[group_key].id,
@@ -132,6 +137,7 @@ class SaleOrder(models.Model):
                     not self.env.context.get('no_check_lines', False):
                 raise UserError(_('There is no invoicable line.'))
             # END HOOK
+            self._modify_invoices(invoices)
 
             for invoice in invoices.values():
                 invoice.compute_taxes()
