@@ -43,7 +43,7 @@ addon | version | maintainers | summary
 [sale_exception](sale_exception/) | 12.0.1.1.1 |  | Custom exceptions on sale order
 [sale_fixed_discount](sale_fixed_discount/) | 12.0.1.0.0 |  | Allows to apply fixed amount discounts in sales orders.
 [sale_force_invoiced](sale_force_invoiced/) | 12.0.1.0.1 |  | Allows to force the invoice status of the sales order to Invoiced
-[sale_force_whole_invoiceability](sale_force_whole_invoiceability/) | 12.0.1.0.0 |  | Sale Force Whole Invoiceability
+[sale_force_whole_invoiceability](sale_force_whole_invoiceability/) | 12.0.1.1.0 |  | Sale Force Whole Invoiceability
 [sale_generator](sale_generator/) | 12.0.1.0.1 | [![sebastienbeau](https://github.com/sebastienbeau.png?size=30px)](https://github.com/sebastienbeau) [![kevinkhao](https://github.com/kevinkhao.png?size=30px)](https://github.com/kevinkhao) | Sale Generator
 [sale_global_discount](sale_global_discount/) | 12.0.1.2.0 |  | Sale Global Discount
 [sale_invoice_group_method](sale_invoice_group_method/) | 12.0.1.0.0 |  | This module allows you to combine severalSales Orders into a single invoice,if they meet the group criteria defined by the 'Invoice Group Method'
@@ -84,6 +84,7 @@ addon | version | maintainers | summary
 [sale_procurement_group_by_commitment_date](sale_procurement_group_by_commitment_date/) | 12.0.1.0.0 |  | Groups pickings based on commitment date of order line
 [sale_procurement_group_by_line](sale_procurement_group_by_line/) | 12.0.1.0.0 |  | Base module for multiple procurement group by Sale order
 [sale_product_category_menu](sale_product_category_menu/) | 12.0.1.0.2 |  | Shows 'Product Categories' menu item in Sales
+[sale_product_classification](sale_product_classification/) | 12.0.1.0.0 |  | Classify products regarding their sales performance
 [sale_product_multi_add](sale_product_multi_add/) | 12.0.1.1.0 |  | Sale Product Multi Add
 [sale_product_returnable](sale_product_returnable/) | 12.0.1.0.2 | [![max3903](https://github.com/max3903.png?size=30px)](https://github.com/max3903) | Get returnable products from your customers
 [sale_product_set](sale_product_set/) | 12.0.1.3.1 |  | Sale product set
@@ -92,6 +93,7 @@ addon | version | maintainers | summary
 [sale_quotation_number](sale_quotation_number/) | 12.0.1.0.0 |  | Different sequence for sale quotations
 [sale_rental](sale_rental/) | 12.0.1.1.1 |  | Manage Rental of Products
 [sale_require_po_doc](sale_require_po_doc/) | 12.0.1.0.0 |  | Sale Orders Require PO or Sales Documentation
+[sale_resource_booking](sale_resource_booking/) | 12.0.1.0.0 | [![Yajo](https://github.com/Yajo.png?size=30px)](https://github.com/Yajo) | Link resource bookings with sales
 [sale_restricted_qty](sale_restricted_qty/) | 12.0.2.0.0 |  | Sale order min quantity
 [sale_secondary_salesperson](sale_secondary_salesperson/) | 12.0.1.0.0 | [![victoralmau](https://github.com/victoralmau.png?size=30px)](https://github.com/victoralmau) | Sale Secondary Salesperson
 [sale_shipping_info_helper](sale_shipping_info_helper/) | 12.0.1.0.0 |  | Add shipping amounts on sale order
