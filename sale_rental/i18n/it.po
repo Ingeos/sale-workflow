@@ -9,14 +9,15 @@ msgstr ""
 "Project-Id-Version: Odoo Server 10.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-11-23 01:51+0000\n"
-"PO-Revision-Date: 2017-11-23 01:51+0000\n"
-"Last-Translator: OCA Transbot <transbot@odoo-community.org>, 2017\n"
+"PO-Revision-Date: 2023-12-24 19:43+0000\n"
+"Last-Translator: mymage <stefano.consolaro@mymage.it>\n"
 "Language-Team: Italian (https://www.transifex.com/oca/teams/23907/it/)\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.17\n"
 
 #. module: sale_rental
 #: model:ir.model.fields,help:sale_rental.field_sale_rental__in_state
@@ -59,7 +60,7 @@ msgstr "Impossibile trovare route\"Vendita da noleggio\""
 #. module: sale_rental
 #: model_terms:ir.ui.view,arch_db:sale_rental.create_rental_product_form
 msgid "Cancel"
-msgstr "Cancella"
+msgstr "Annulla"
 
 #. module: sale_rental
 #: selection:sale.rental,state:0
@@ -131,7 +132,7 @@ msgstr ""
 #. module: sale_rental
 #: model:ir.model.fields,field_description:sale_rental.field_create_rental_product__default_code
 msgid "Default Code"
-msgstr "Default Code"
+msgstr "Codice predefinito"
 
 #. module: sale_rental
 #: model_terms:ir.ui.view,arch_db:sale_rental.sale_rental_form
@@ -148,7 +149,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:sale_rental.field_create_rental_product__display_name
 #: model:ir.model.fields,field_description:sale_rental.field_sale_rental__display_name
 msgid "Display Name"
-msgstr "Nome da visualizzare"
+msgstr "Nome visualizzato"
 
 #. module: sale_rental
 #: model:ir.model.fields,field_description:sale_rental.field_sale_rental__end_date
@@ -230,7 +231,7 @@ msgstr "Nuovo noleggio"
 #: code:addons/sale_rental/models/sale_order.py:225
 #, python-format
 msgid "Not enough stock !"
-msgstr "Non abbastanza stock"
+msgstr "Non abbastanza stock!"
 
 #. module: sale_rental
 #: code:addons/sale_rental/models/sale_order.py:85
@@ -240,7 +241,7 @@ msgid ""
 "rental service product !"
 msgstr ""
 "Nella nuova riga dell'ordine di vendita per il prodotto %s, e' necessario "
-"avere un prodotto di tipo \"servizio noleggio\" "
+"avere un prodotto di tipo \"servizio noleggio\"!"
 
 #. module: sale_rental
 #: code:addons/sale_rental/models/sale_order.py:102
@@ -311,7 +312,7 @@ msgstr "Prodotto"
 #. module: sale_rental
 #: model:ir.model.fields,field_description:sale_rental.field_create_rental_product__categ_id
 msgid "Product Category"
-msgstr "Categoria Prodotto"
+msgstr "Categoria prodotto"
 
 #. module: sale_rental
 #: model:ir.model.fields,field_description:sale_rental.field_create_rental_product__hw_product_id
@@ -496,7 +497,7 @@ msgstr "Ordini vendita"
 #. module: sale_rental
 #: model:ir.model,name:sale_rental.model_sale_order_line
 msgid "Sales Order Line"
-msgstr "Linea d'ordine di vendita"
+msgstr "Riga ordine di vendita"
 
 #. module: sale_rental
 #: model_terms:ir.ui.view,arch_db:sale_rental.sale_rental_form
@@ -561,7 +562,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:sale_rental.field_sale_rental__start_date
 #: model_terms:ir.ui.view,arch_db:sale_rental.sale_rental_search
 msgid "Start Date"
-msgstr "Data di inizio"
+msgstr "Data inizio"
 
 #. module: sale_rental
 #: model:ir.model.fields,field_description:sale_rental.field_sale_rental__state
@@ -651,9 +652,8 @@ msgid ""
 "the stock location '%s' ! Make sure that you get some units back in the mean "
 "time or re-supply the stock location '%s'."
 msgstr ""
-"Si vuole noleggiare %.2f %s  ma sono solo disponibili %.2f %s nella "
-"locazione '%s'. Assicurarsi prima il rientro o procedere alla riallocazione "
-"di '%s'"
+"Si vuole noleggiare %.2f %s ma sono solo disponibili %.2f %s nella locazione "
+"'%s'. Assicurarsi prima il rientro o procedere alla riallocazione di '%s'"
 
 #. module: sale_rental
 #: model:product.product,weight_uom_name:sale_rental.rent_consu_delivery_01
